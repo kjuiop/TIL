@@ -116,3 +116,74 @@
 
 
 
+## 12-Factors
+
+---
+
+
+- BASE CODE
+  - 코드 통합 및 통일적인 관리
+  - 단일 코드 베이스, 자체 레파지토리에 저장된 각 마이크로서비스 소스에 대한 버전관리
+
+
+- Dependency Isolation
+  - 종속성의 배제
+  - 각 모듈별로 변경될 수 있어야 함
+
+
+- Configurations
+  - 환경설정의 외부관리
+
+
+- linkable backing services
+  - 보조 서비스 지원
+
+
+- stages of creation
+  - 빌드, 릴리즈, 실행 환경을 분리하는 것
+  - 각각은 고유의 아이디로 태그를 갖고 있어야 함
+  - 롤백 기능을 지니고 있어야 함
+  - CI/CD 를 이용하여 자동화 시켜야 함
+
+
+- stateless processes
+  - 각 서비스는 모두 분리된 채 운영될 수 있어야 함
+
+
+- port binding
+  - 자체 포트에서 노출되는 인터페이스 및 기능이 있어야 함
+
+
+- concurrency
+  - 동시성
+  - 하나의 서비스가 여러 인터페이스에 동일하게 수행될 수 있어야 트래픽을 분산해도 동일한 기능을 제공할 수 있음
+
+
+- disposability
+  - 서비스 인스턴스 자체가 삭제 가능해야 한다.
+  - 확장과 삭제가 자연스러워야 한다.
+
+
+- development & production parity
+  - 개발과 운영환경의 분리
+
+
+- logs
+  - 로그를 이벤트 스트림으로 해야함. 어플리케이션이 작동하지 않아도 로그는 계속 작동되어야 함
+  - ELK, 등 로그관리시스템을 별도로 도입
+
+
+- admin process for eventual processes
+  - 관리도구가 필요함 ( 전체 MSA 시스템 현황을 알 수 있어야 함 )
+
+
+- API First
+
+
+- Telemetry
+
+
+- Authentication and authorization
+  - 인증정보
+
+
