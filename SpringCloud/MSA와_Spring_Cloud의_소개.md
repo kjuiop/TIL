@@ -245,3 +245,90 @@
   - SOA : 공통의 서비스를 ESB에 모아 사업 측면에서 공통 서비스 형식으로 서비스 제공
   - MSA : 각 독립된 서비스가 노출된 REST API 를 사용
 
+
+### REST Ful API 설계 유의사항
+
+- 소비자 입장에서의 설계 ( 간단 명료 )
+- HTTP Method, Header 등 HTTP 의 장점을 최대한 살려야 함
+- Request Method 활용
+  - GET , POST , PUT , DELETE
+- Response Status ( 응답 상태 코드 ) 규칙
+  - 200, 404, 400, 201, 401, 500
+- No secure info in URI
+  - 비밀번호 등 보안이 필요한 데이터를 URI 에 쓰면 안됨
+- 복수형태, 명사형태의 URI 값을 써야 함
+
+![6](https://user-images.githubusercontent.com/41246605/206814435-c696ea65-69a4-4d6b-8940-183c7796730b.png)
+
+<br />
+
+![7](https://user-images.githubusercontent.com/41246605/206814440-810dca00-aed1-45d7-9294-7336b98a35cc.png)
+
+<br />
+
+- API Gateway 를 통해 필요한 서비스를 요청
+- API Gateway 를 통해 수집된 요청은 Service Router 에게 어디로 가야할지 질문을 하게 됨
+- Service Discovery 는 필요한 마이크로서비스가 어디에 저장되어 있는지 질문을 바음
+- 마이크로 서비스는 각 A, B 에 인스턴스로 구성되어 있음
+- Service Discovery 를 통해 필요한 마이크로서비스 위치를 알아냈으면 로드밸런서를 통해 해당 마이크로 서비스로 요청이 전달됨
+- Service Router, load balancing 은 하나의 시스템으로 묶어서 사용되는 경우도 있음
+- 마이크로서비스 환경 설정 정보는 Config Store 를 통해 외부 시스템에 저장시켜 사용함
+- 마이크로서비스는 가상화 컨테이너 기반으로 구성되어 있음
+- 완성왼 Application 은 CI/CD 를 통해 통합, 빌드, 배포 가 됨
+- Backing System 은 마이크로 서비스의 저장되어있는 Storage를 모아서 사용되거나
+  메시지 처리 시스템을 통해 하나의 서비스처럼 서비스들을 연결함
+- telemetry 는 모니터링 기능이랑 진단기능을 갖고 있음
+
+
+<br />
+
+### Service Mesh
+
+마이크로 서비스를 적용한 내부 통신, 인프라의 레이어라고 볼 수 있음
+
+- MSA 인프라 → 미들웨어
+  - 프록시 역할, 인증, 권한 부여, 암호화, 서비스 검색, 요청 라우팅, 로드 밸런싱
+  - 자가치유 복구 서비스
+- 서비스 간의 통신과 관련된 기능을 자동화
+- 설정정보, 라우팅, 인증정보, 로드밸런싱, 탄력성, 서비스 검색, 암호화 등의 기능을 통해 MSA 운영을 지원
+- 하나의 제품이 아닌 추상적인 개념
+
+![8](https://user-images.githubusercontent.com/41246605/206814443-3997f586-efc4-430d-9c7d-d7eb438b82d8.png)
+
+### Spring Cloud 란?
+
+- 환경설정관리 (Centralized configuration management)
+  - **Spring Cloud Config Server**
+  - CurrencyCalculationService, CurrencyExchangeService, LimitsService
+  - 게이트웨이의 IP, 서버의 토큰 기본정보 등을 Git 에 모아놓고 다른 MSA 에서 참조해서 사용
+
+
+![9](https://user-images.githubusercontent.com/41246605/206814444-9594cf06-9005-4b90-8fe0-5968bf4b396c.png)
+
+
+- 서비스 등록과 위치정보 확인 (Location transparency)
+  - Naming Server (Eureka)
+
+- 서버 요청 분산 (Load Distribution, Load Balancing)
+  - Ribbon (Client Side)  : 게이트웨이 서비스
+  - Spring Cloud Gateway
+
+
+![10](https://user-images.githubusercontent.com/41246605/206814450-71d35cd9-afd8-4008-ac96-51a9bafc15c9.png)
+
+
+- Easier REST Clients
+  - FeignClient
+
+- Visibility and monitoring
+  - Zipkin Distributed Tracing
+  - Netflix API gateway
+
+- Fault Tolerance
+  - Hystrix
+
+
+
+
+
+
