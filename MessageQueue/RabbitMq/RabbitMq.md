@@ -62,7 +62,7 @@ AMQP 에는 네트워크에 문제가 있거나, 메시지를 처리하지 못�
 ### Bindings
 
 - 생성된 Exchange 에는 전달 받은 메시지를 원하는 Queue 로 전달하기 위해 Bindings 이라는 규칙을 정의할 수 있음
-- 간단하게 목적지 Queue 이름만으로도 Binding 을 추가할 수 있고, 일부 Exchange type 에 따라 routing key 를 지정해서 멧지ㅣ를 필터링한 후 지정한 Queue 로 보내도록 정의할 수 있다.
+- 간단하게 목적지 Queue 이름만으로도 Binding 을 추가할 수 있고, 일부 Exchange type 에 따라 routing key 를 지정해서 메시지를 필터링한 후 지정한 Queue 로 보내도록 정의할 수 있다.
 
 
 ## RabbitMQ 특징
