@@ -27,3 +27,28 @@
 - Sub-query : join 이 너무 복잡하거나 큰 테이블에서 필요한 데이터만 가져오려면 sub-query를 사용하면 성능을 향상시킬 수 있다.
 - 추가적으로 복잡한 join 을 사용할 경우, Join 테이블을 미리 생성해두거나 Materialized View를 사용하면 성능을 향상시킬 수 있다.
 - 마지막으로, Join 쿼리를 실행할 때 서버의 리소스가 부족하지 않는지 확인하는 것도 중요하다. 메모리, CPU, 디스크 I/O 등 서버 자원을 확인하고 최적화할 필요가 있을 수 있다.
+
+---
+
+# Join 쿼리 동작방식 예시 
+
+<br />
+
+```sql
+select c.challenge_id, c.user_id, c.habit_id, h.subtitle, count(auth_id) + count(wildcard_id)
+from challenge c
+left outer join habit h on c.habit_id = h.habit_id
+left outer join auth a on c.challenge_id = a.challenge_id
+left outer join wildcard w on c.challenge_id = w.challenge_id
+group by challenge_id
+```
+
+1. From 절 : ‘challenge’ 테이블을 선택하고, ‘habit’ 테이블과 left outer join 연산을 수행하여 조인 합니다.
+2. on 절 : challenge 테이블과 habit 테이블을 habit_id 컬럼을 기준으로 조인합니다.
+    1. challenge 테이블과 auth 테이블을 challenge_id 컬럼을 기준으로 조인합니다.
+    2. challenge 테이블과 wildcard 테이블을 challenge_id 컬럼을 기준으로 조인합니다.
+3. select 절 : challenge 테이블의 challenge_id, user_id, habit_id 컬럼, habit 테이블의 subtitle 컬럼, auth 테이블의 auth_id 컬럼의 개수 , wildcard 테이블의 wildcard_id 컬럼의 개수를 선택합니다.
+4. group by 절 : challenge_id 컬럼을 기준으로 그룹을 만듭니다.
+5. where, having, order by, Limit 절: 에 대한 연산을 수행합니다.
+
+
