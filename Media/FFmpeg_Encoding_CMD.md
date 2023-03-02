@@ -10,6 +10,8 @@ ffmpeg -i input.mp4 -benchmark -c copy output.mp4
 
 - 인코딩을 수행하지 않고 원본 파일을 그대로 output.mp4 로 출력함
 
+<br />
+
 ### **FFmpeg h264 Encoding CMD**
 
 ```java
@@ -28,6 +30,8 @@ ffmpeg -i input.mp4 -c:v libx264 -b:v 1500k -preset slow -crf 22 -c:a copy -benc
     - 이 옵션을 사용하면 소스 파일에서 복사된 오디오가 출력 파일에 그대로 포함됩니다.
 - `-benchmark` : 인코딩 작업이 완료된 후 성능 통계를 출력합니다.
 - `output.mp4` : 생성된 출력 파일의 이름을 지정합니다.
+
+<br />
 
 ### **FFmpeg h265 Encoding CMD**
 
@@ -50,6 +54,8 @@ ffmpeg -i input.mp4 -gpu 0 -c:v hevc_nvenc -b:v 1500k -preset slow -crf 22 -c:a 
 - `-benchmark` : 인코딩 작업이 완료된 후 성능 통계를 출력합니다.
 - `output.mp4` : 생성된 출력 파일의 이름을 지정합니다.
 
+<br />
+
 ### FFmpeg AV1 Encoding CMD
 
 ```java
@@ -69,3 +75,23 @@ ffmpeg -i input.mp4 -c:v libaom-av1 -crf 30 -b:v 0 -c:a copy -pix_fmt yuv420p -f
 - `-auto-alt-ref 1` : 자동 대체 참조 프레임 수를 1로 설정합니다.
 - `-lag-in-frames 25` : 인코딩 지연 프레임 수를 25로 설정합니다.
 - `-g 9999` : IDR 프레임의 주기를 9999로 설정합니다.
+
+<br />
+
+
+### FFmpeg AV1 Encoding CMD2
+
+```java
+ffmpeg -i input.mp4 -c:v libaom-av1 -threads 4 -tile-columns 4 -tile-rows 2 -speed 4 -deadline good -cpu-used 4 output.av1
+```
+
+- `-threads` : 이 옵션을 사용하면 인코딩에 사용할 스레드 수를 지정할 수 있습니다.
+- `-tile-columns` : 이 옵션을 사용하면 AV1 인코딩 프로세스를 타일 단위로 분할할 수 있습니다. 이것은 다중 코어 CPU 에서 특히 효과적입니다.
+  - `-tile-columns 4 -tile-rows 2` : 인코딩 프로세스가 4개의 열과 2개의 행으로 분할됩니다.
+- `-speed` : 이 옵션을 사용하면 인코딩 속도와 품질 간의 균형을 설정합니다.
+  - `-speed` 값이 낮을수록 인코딩 속도는 더 빠르지만 품질은 떨어집니다.
+- `-deadline` :   이 옵션은 인코딩 품질에 대한 제한 기간을 설정합니다.
+  - `-deadline good` 옵션을 사용하면 높은 인코딩 품질을 제공합니다.
+- `-cpu-used` : 이 옵션은 CPU 사용량을 제어합니다. -cpu-used 값이 높을수록 인코딩 속도는 빨라지지만 CPU 사용량도 많아집니다.
+
+
