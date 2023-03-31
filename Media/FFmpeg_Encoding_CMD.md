@@ -95,3 +95,77 @@ ffmpeg -i input.mp4 -c:v libaom-av1 -threads 4 -tile-columns 4 -tile-rows 2 -spe
 - `-cpu-used` : 이 옵션은 CPU 사용량을 제어합니다. -cpu-used 값이 높을수록 인코딩 속도는 빨라지지만 CPU 사용량도 많아집니다.
 
 
+### **FFmpeg h.264 Encoding CMD**
+
+```java
+ffmpeg -y -i input.mp4 -c:v libx264 -b:v 1500k -minrate 1500k -maxrate 1500k -bufsize 1500k -vf scale=1920*820 -r 60 -preset slow -c:a copy -benchmark history/output.mp4
+```
+
+- `-i input.mp4` : 인코딩할 원본 비디오 파일의 이름을 지정합니다.
+- `-c:v libx264` : 비디오 코덱을 libx264 로 지정합니다.
+- `-b:v 1500k` : 비디오의 비트레이트를 1500kbps 로 지정합니다.
+- `-preset slow` : 인코딩 속도와 출력파일의 품질 사이의 균형을 설정합니다.
+  - 느린 속도는 높은 품질을, 빠른 속도는 낮은 품질을 제공합니다.
+- `-crf 22` : 출력 파일의 비디오 품질을 설정합니다.
+  - 낮은 값은 높은 품질을 의미합니다.
+  - 일반적으로 18-28 범위의 값을 사용합니다.
+- `-c:a copy` : 오디오를 인코딩하지 않고 원본 파일에서 복사합니다.
+  - 이 옵션을 사용하면 소스 파일에서 복사된 오디오가 출력 파일에 그대로 포함됩니다.
+- `-benchmark` : 인코딩 작업이 완료된 후 성능 통계를 출력합니다.
+- `output.mp4` : 생성된 출력 파일의 이름을 지정합니다.
+
+### **FFmpeg h265 Encoding CMD**
+
+```java
+ffmpeg -y -i input.mp4 -gpu 0 -c:v hevc_nvenc -b:v 1000k -minrate 1000k -maxrate 1000k -bufsize 1000k -vf scale=1354*576 -r 30 -preset slow -c:a copy -benchmark history/output.mp4
+```
+
+- `-i input.mp4` : 인코딩할 원본 비디오 파일의 이름을 지정합니다.
+- `-gpu 0` : FFmpeg 에서 GPU 를 사용하도록 하는 옵션
+  - FFmpeg 은 첫번째 GPU 를 사용함
+- `-c:v hevc_nvenc` : HEVC(H.265) 비디오 코덱을 사용하고, NVIDIA GPU 하드웨어 가속을 사용하여 인코딩합니다.
+- `-b:v 1000k` : 비디오의 비트레이트를 1500kbps 로 지정합니다.
+- `-preset slow` : 인코딩 속도와 출력파일의 품질 사이의 균형을 설정합니다.
+  - 느린 속도는 높은 품질을, 빠른 속도는 낮은 품질을 제공합니다.
+- `-crf 22` : 출력 파일의 비디오 품질을 설정합니다.
+  - 낮은 값은 높은 품질을 의미합니다.
+  - 일반적으로 18-28 범위의 값을 사용합니다.
+- `-c:a copy` : 오디오를 인코딩하지 않고 원본 파일에서 복사합니다.
+  - 이 옵션을 사용하면 소스 파일에서 복사된 오디오가 출력 파일에 그대로 포함됩니다.
+- `-benchmark` : 인코딩 작업이 완료된 후 성능 통계를 출력합니다.
+- `output.mp4` : 생성된 출력 파일의 이름을 지정합니다.
+
+### 성능 테스트를 위한 ShellScript
+
+---
+
+성능테스트를 위해 ShellScript 를 만들었습니다.
+
+테스트 Set 을 모두 일일이 실행하고, 기록하고 종료할 수 없기 때문에 실행 결과를 result.txt 파일에 기입하게 하였습니다.
+
+출력파일은 history 디렉터리에 넣었습니다.
+
+```java
+#!/bin/bash
+
+result_file="result.txt"
+
+ffmpeg_cmds=(
+	"ffmpeg -y -i input1.mp4 -c:v libx264 -b:v 1500k -minrate 1500k -maxrate 1500k -bufsize 1500k -vf scale=1920*820 -r 60 -preset slow -c:a copy -benchmark history/ouput1.mp4"
+  "ffmpeg -y -i input2.mp4 -gpu 0 -c:v hevc_nvenc -b:v 800k -minrate 800k -maxrate 800k -bufsize 800k -vf scale=960*410 -r 30 -preset slow -c:a copy -benchmark history/output2.mp4"
+)
+
+for (( i=0; i<${#ffmpeg_cmds[@]}; i++ ))
+do
+    echo "FFmpeg command: ${ffmpeg_cmds[$i]}"
+    echo "Encoding ${i+1}/${#ffmpeg_cmds[@]} start..."
+    echo "--------------------------------------------------" >> $result_file
+    echo "FFmpeg command: ${ffmpeg_cmds[$i]}" >> $result_file
+    echo "--------------------------------------------------" >> $result_file
+    echo "" >> $result_file
+    ${ffmpeg_cmds[$i]} 2>&1 | tee -a $result_file
+    echo "" >> $result_file
+    echo "Encoding ${i+1}/${#ffmpeg_cmds[@]} complete."
+done
+
+```
