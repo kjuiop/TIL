@@ -24,9 +24,13 @@
     - 또한 passlog 옵션을 같게 지정하거나 지정하지 않은 경우 default passlog 파일이 생성됩니다.
         - 만일 2개 이상의 ffmpeg 명령어를 실행하는 경우, passlog 파일이 중복되어 하나의 파일을 2개의 프로세스가 접근하기 때문에 교착상태에 빠지게 됩니다.
 
+<br />
+
 ```java
 time ffmpeg -y -i input.mp4 -vcodec libx264 -profile:v high -level:v 4.1 -b:v 1200k -maxrate 1500k -minrate 800k -bufsize 2400k -g 90 -pass 1 -passlogfile passlog/output_$idx -preset medium -an -f mp4 /dev/null && time ffmpeg -y -i input.mp4 -vcodec libx264 -profile:v high -level:v 4.1 -b:v 1200k -maxrate 1500k -minrate 800k -bufsize 2400k -vf scale=1920:820 -g 90 -pass 2 -passlogfile passlog/output_$idx -c:a aac -b:a 96k -preset medium history/output_$idx.mp4
 ```
+
+<br />
 
 - `vcodec libx264` : 비디오 코덱으로 h.264를 사용합니다.
 - `-profile:v high -level:v 4.1` : 인코딩할 비디오의 프로파일과 레벨을 설정합니다.
