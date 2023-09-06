@@ -41,3 +41,39 @@ Client 는 이 서버로 Authorization Code 를 넘겨 Token 을 발급 받을 �
 <br />
 
 ![2](https://user-images.githubusercontent.com/41246605/209637580-fcfb9b6d-d2c9-4b01-ad8d-8712f193ae85.png)
+
+
+
+
+# Spring OAuth2.0 라이브러리 동작
+
+---
+
+- **OAuth2AuthorizationRequestRedirectFilter**
+    - doFilterInteral 메서드가 호출됨
+- **DefaultOAuth2AuthorizationRequestResolver**
+    - resolve 메서드를 내부적으로 호출하고, 결과가 null 이 아니면 인가 요청이 필요로 하는 페이지로 redirect 시킴
+    - registrationId 값을 활용하여 값을 넘겨줌
+- **authorizationRequestMatcher**
+    - authorizationRequestBaseUri + / + {registrationId} 로 값을 주입받아 반환함
+- **resolve**
+    - 최종 resolve 메서드에서 redirect-uri 을 만들어서 가공하여 반환
+
+### 로그인 요청에 대한 흐름
+
+- 사용자가 /oauth2/authorization/kakao로 요청
+- DefaultOAuth2AuthorizationRequestResolver에서 url pattern 검사를 함
+- /oauth2/authorization/{registrationId} pattern에 맞으면 registrationId 변수에 바인딩 된 uri 변수를 가져옴
+- uri변수값을 가져와서 ClientRegistration을 조회
+- ClientRegistration에 들어있는 정보로 redirect-uri을 가공
+- 사용자한테 가공된 redirect-uri로 해당 페이지로 redirect를 함
+
+# Reference
+
+---
+
+- https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api
+- OAuth 프로토콜 정리
+    - [https://velog.io/@jakeseo_me/Oauth-2.0과-OpenID-Connect-프로토콜-정리](https://velog.io/@jakeseo_me/Oauth-2.0%EA%B3%BC-OpenID-Connect-%ED%94%84%EB%A1%9C%ED%86%A0%EC%BD%9C-%EC%A0%95%EB%A6%AC)
+- Spring OAuth 2.0 라이브러리 동작
+    - https://kim-jong-hyun.tistory.com/150
